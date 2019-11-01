@@ -20,12 +20,12 @@ npm i rutorrent-promise --save
     ssl: true, // default: false
     username: '', // default: none
     password: '', // default: none
-  })
+  });
 ```
 
 ## `get()`
 
-List of the torrents.
+List all the torrents.
 
 ```javascript
 rutorrent
@@ -42,7 +42,7 @@ rutorrent
     //   },
     //   ...
     // ]
-  })
+  });
 ```
 
 ## `addFile(file, options = {})`
@@ -57,5 +57,5 @@ rutorrent
   })
   .then((data) => {
     // ...
-  })
+  });
 ```
