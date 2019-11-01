@@ -55,7 +55,6 @@ describe('rutorrent', () => {
         .then((result) => {
           expect(result).to.be.an('array');
           if (result.length) {
-            console.log(result);
             result.forEach((res) => {
               expect(res).to.have.property('hashString');
               expect(res).to.have.property('name');
@@ -80,6 +79,8 @@ describe('rutorrent', () => {
             label: 'node-rutorrent-promise'
           })
             .then((response) => {
+              expect(response).to.have.property('hashString');
+              expect(response).to.have.property('name', '2019-09-26-raspbian-buster.zip');
               done();
             })
             .catch(done);

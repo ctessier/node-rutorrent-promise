@@ -97,8 +97,10 @@ class RuTorrent {
         path: '/php/addtorrent.php',
         data: formData,
         headers: formData.getHeaders(),
+      }).then(() => {
+        return this.get();
       }).then((data) => {
-        resolve(data);
+        resolve(data.pop());
       }).catch(err => {
         reject(err);
       });
