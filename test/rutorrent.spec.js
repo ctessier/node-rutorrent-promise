@@ -77,10 +77,11 @@ describe('rutorrent', () => {
         response.on('end', () => {
           rutorrent.addFile(fs.readFileSync(destination), {
             label: 'node-rutorrent-promise'
-          }, ['d.get_name'])
+          }, ['d.get_name', 'd.get_custom1'])
             .then((response) => {
               expect(response).to.have.property('hashString');
               expect(response).to.have.property('d.get_name', '2019-09-26-raspbian-buster.zip');
+              expect(response).to.have.property('d.get_custom1', 'node-rutorrent-promise');
               done();
             })
             .catch(done);
