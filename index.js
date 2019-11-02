@@ -4,6 +4,8 @@ const axios = require('axios');
 const qs = require('querystring');
 const FormData = require('form-data');
 
+const utils = require('./utils');
+
 class RuTorrent {
 
   /**
@@ -78,9 +80,13 @@ class RuTorrent {
    *   - label
    *   - destination
    *
+   * @param {string|Buffer} file
+   * @param {object} options
+   * @param {array} fields
+   *
    * @return {Promise}
    */
-  addFile(file, options = {}) {
+  addFile(file, options = {}, fields = []) {
     const formData = new FormData();
     formData.append('torrent_file', file, 'torrent');
 
@@ -98,7 +104,7 @@ class RuTorrent {
         data: formData,
         headers: formData.getHeaders(),
       }).then(() => {
-        return this.get();
+        return this.get(fields);
       }).then((data) => {
         resolve(data.pop());
       }).catch(err => {
@@ -107,17 +113,25 @@ class RuTorrent {
     });
   }
 
-  get() {
+  /**
+   * Get the list of torrents.
+   *
+   * @param {array} fields
+   *
+   * @return {array}
+   */
+  get(fields = []) {
     return this.callServer({
       path: '/plugins/httprpc/action.php',
       data: qs.stringify({ mode: 'list' }),
-    }).then((data) => Object.keys(data.t).map((hash) => ({
-      hashString: hash.toLowerCase(),
-      name: data.t[hash][4],
-      totalBytes: parseInt(data.t[hash][5]),
-      bytesDone: parseInt(data.t[hash][8]),
-      label: data.t[hash][14],
-    })));
+    }).then((data) => Object.keys(data.t).map((hashString) => {
+      const torrent = utils.getTorrentInfo(data.t[hashString]);
+      const res = { hashString };
+      for (let i = 0 ; i < fields.length ; ++i) {
+        res[fields[i]] = torrent[fields[i]];
+      }
+      return res;
+    }));
   }
 }
 
