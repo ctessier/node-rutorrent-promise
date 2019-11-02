@@ -51,16 +51,16 @@ describe('rutorrent', () => {
 
   describe('methods', () => {
     it('returns the list of torrents', (done) => {
-      rutorrent.get()
+      rutorrent.get(['d.get_name', 'd.get_size_bytes', 'd.get_bytes_done', 'd.get_custom1'])
         .then((result) => {
           expect(result).to.be.an('array');
           if (result.length) {
             result.forEach((res) => {
               expect(res).to.have.property('hashString');
-              expect(res).to.have.property('name');
-              expect(res).to.have.property('totalBytes');
-              expect(res).to.have.property('bytesDone');
-              expect(res).to.have.property('label');
+              expect(res).to.have.property('d.get_name');
+              expect(res).to.have.property('d.get_size_bytes');
+              expect(res).to.have.property('d.get_bytes_done');
+              expect(res).to.have.property('d.get_custom1');
             })
           }
           done();
@@ -77,10 +77,11 @@ describe('rutorrent', () => {
         response.on('end', () => {
           rutorrent.addFile(fs.readFileSync(destination), {
             label: 'node-rutorrent-promise'
-          })
+          }, ['d.get_name', 'd.get_custom1'])
             .then((response) => {
               expect(response).to.have.property('hashString');
-              expect(response).to.have.property('name', '2019-09-26-raspbian-buster.zip');
+              expect(response).to.have.property('d.get_name', '2019-09-26-raspbian-buster.zip');
+              expect(response).to.have.property('d.get_custom1', 'node-rutorrent-promise');
               done();
             })
             .catch(done);
