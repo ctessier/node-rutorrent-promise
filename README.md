@@ -1,5 +1,10 @@
 # node-rutorrent-promise
 
+[![version](https://badgen.net/npm/v/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
+[![size](https://badgen.net/bundlephobia/min/rutorrent-promise)](https://bundlephobia.com/result?p=rutorrent-promise)
+[![downloads](https://badgen.net/npm/dt/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
+![license](https://badgen.net/npm/license/rutorrent-promise)
+
 Interact with ruTorrent via promises.
 
 This was inspired by [Grant](https://github.com/grantholle)'s [transmission](https://www.npmjs.com/package/transmission-promise) library. It allows use to communicate with ruTorrent client via HTTP RPC requests using promises.
