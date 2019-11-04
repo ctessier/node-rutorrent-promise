@@ -5,7 +5,7 @@
 [![downloads](https://badgen.net/npm/dt/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
 ![license](https://badgen.net/npm/license/rutorrent-promise)
 
-Interact with ruTorrent via promises.
+__Interact with ruTorrent via promises.__
 
 This was inspired by [Grant](https://github.com/grantholle)'s [transmission](https://www.npmjs.com/package/transmission-promise) library. It allows use to communicate with ruTorrent client via HTTP RPC requests using promises.
 
