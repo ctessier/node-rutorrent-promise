@@ -25,7 +25,7 @@ class RuTorrent {
     const protocol = options.ssl === true ? 'https' : 'http';
     const host = options.host || 'localhost';
     const port = options.port || 80;
-    const path = options.url || '/rutorrent';
+    const path = options.path || '/rutorrent';
 
     this.axios = axios.create({
       baseURL: `${protocol}://${host}:${port}${path}`,
