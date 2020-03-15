@@ -60,13 +60,13 @@ class RuTorrent {
           },
         });
 
-        if (response.headers['content-type'].indexOf('application/json') === -1) {
+        if (response.headers['content-type'].indexOf('text/xml') !== -1 && response.data.indexOf('faultCode') > 0) {
           throw new Error(response.data);
         }
 
         resolve(response.data);
       } catch (err) {
-        if (err.response.status === 302 && err.response.headers.location.indexOf('Success') !== -1) {
+        if (err.response && err.response.status === 302 && err.response.headers.location.indexOf('Success') !== -1) {
           resolve(true);
         }
         reject(err);
@@ -131,6 +131,109 @@ class RuTorrent {
         res[fields[i]] = torrent[fields[i]];
       }
       return res;
+    }));
+  }
+
+  /**
+   * Delete a torrent.
+   *
+   * @param  {string}          hash
+   * @param  {boolean}         deleteTiedFile
+   * @return {Promise<object>}
+   */
+  delete(hash, deleteTiedFile = true) {
+    let data = `<?xml version="1.0" encoding="UTF-8"?>
+      <methodCall>
+        <methodName>system.multicall</methodName>
+        <params>
+          <param>
+            <value>
+              <array>
+                <data>
+                  <value>
+                    <struct>
+                      <member>
+                        <name>methodName</name>
+                        <value>
+                          <string>d.set_custom5</string>
+                        </value>
+                      </member>
+                      <member>
+                        <name>params</name>
+                        <value>
+                          <array>
+                            <data>
+                              <value>
+                                <string>${hash}</string>
+                              </value>
+                              <value>
+                                <string>1</string>
+                              </value>
+                            </data>
+                          </array>
+                        </value>
+                      </member>
+                    </struct>
+                  </value>`;
+    if (deleteTiedFile) {
+      data += `<value>
+        <struct>
+          <member>
+            <name>methodName</name>
+            <value>
+              <string>d.delete_tied</string>
+            </value>
+          </member>
+          <member>
+            <name>params</name>
+            <value>
+              <array>
+                <data>
+                  <value>
+                    <string>${hash}</string>
+                  </value>
+                </data>
+              </array>
+            </value>
+          </member>
+        </struct>
+      </value>`;
+    }
+    data += `<value>
+                    <struct>
+                      <member>
+                        <name>methodName</name>
+                        <value>
+                          <string>d.erase</string>
+                        </value>
+                      </member>
+                      <member>
+                        <name>params</name>
+                        <value>
+                          <array>
+                            <data>
+                              <value>
+                                <string>${hash}</string>
+                              </value>
+                            </data>
+                          </array>
+                        </value>
+                      </member>
+                    </struct>
+                  </value>
+                </data>
+              </array>
+            </value>
+          </param>
+        </params>
+      </methodCall>`;
+
+    return this.callServer({
+      type: 'text/xml; charset=UTF-8',
+      path: '/plugins/httprpc/action.php',
+      data,
+    }).then(() => ({
+      hashString: hash,
     }));
   }
 }
