@@ -142,5 +142,5 @@ SSL=true                            # (https or http)
 USERNAME=YOUR_CLIENT_USERNAME
 PASSWORD=YOUR_CLIENT_PASSWORD
 
-$ npm t
+$ npm i && npm t
 ```
