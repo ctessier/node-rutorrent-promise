@@ -1,11 +1,11 @@
-# node-rutorrent-promise
+# ⬇️ node-rutorrent-promise
 
 [![version](https://badgen.net/npm/v/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
 [![size](https://badgen.net/bundlephobia/min/rutorrent-promise)](https://bundlephobia.com/result?p=rutorrent-promise)
 [![downloads](https://badgen.net/npm/dt/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
 ![license](https://badgen.net/npm/license/rutorrent-promise)
 
-__Interact with ruTorrent via promises.__
+__Interact with ruTorrent via promises__ 👌
 
 This was inspired by [Grant](https://github.com/grantholle)'s [transmission](https://www.npmjs.com/package/transmission-promise) library. It allows use to communicate with ruTorrent client via HTTP RPC requests using promises.
 
@@ -107,4 +107,40 @@ rutorrent
     //   'd.get_name': <string>,
     // }
   });
+```
+
+### `delete(hash, deleteTiedFile = true)`
+
+Delete a torrent.
+
+```javascript
+rutorrent
+  .delete('hash_string')
+  .then((data) => {
+    // Response example:
+    // {
+    //   hashString: 'hash_string',
+    // }
+  });
+```
+
+## Contributing
+
+👨‍💻👩‍💻
+
+Feel free to contribute and help me add more methods to interact with ruTorrent.
+
+To run the unit tests, create an `.env` file in the `test` directory and fill it in with your client host and credentials:
+
+```bash
+$ cp test/.env.sample test/.env
+$ cat test/.env
+HOST=YOUR_CLIENT_HOST
+PORT=YOUR_CLIENT_PORT
+PREFIX_PATH=YOUR_CLIENT_PREFIX_PATH # (default is /rutorrent)
+SSL=true                            # (https or http)
+USERNAME=YOUR_CLIENT_USERNAME
+PASSWORD=YOUR_CLIENT_PASSWORD
+
+$ npm t
 ```
