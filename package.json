@@ -1,6 +1,6 @@
 {
   "name": "rutorrent-promise",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "An API client for ruTorrent using promises",
   "main": "index.js",
   "keywords": [
