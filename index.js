@@ -76,15 +76,15 @@ class RuTorrent {
 
   /**
    * Adds a new torrent from a given file.
+   *
    * Available options:
    *   - label
    *   - destination
    *
-   * @param {string|Buffer} file
-   * @param {object} options
-   * @param {array} fields
-   *
-   * @return {Promise}
+   * @param  {string|Buffer}   file
+   * @param  {object}          options
+   * @param  {array}           fields
+   * @return {Promise<object>}
    */
   addFile(file, options = {}, fields = []) {
     const formData = new FormData();
@@ -116,9 +116,8 @@ class RuTorrent {
   /**
    * Get the list of torrents.
    *
-   * @param {array} fields
-   *
-   * @return {array}
+   * @param  {array}          fields
+   * @return {Promise<array>}
    */
   get(fields = []) {
     return this.callServer({
