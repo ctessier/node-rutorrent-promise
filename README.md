@@ -7,7 +7,7 @@
 
 __Interact with ruTorrent via promises__ 👌
 
-This was inspired by [Grant](https://github.com/grantholle)'s [transmission](https://www.npmjs.com/package/transmission-promise) library. It allows use to communicate with ruTorrent client via HTTP RPC requests using promises.
+This was inspired by [Grant](https://github.com/grantholle)'s [transmission](https://www.npmjs.com/package/transmission-promise) library. It provides methods to communicate with ruTorrent client using promises. It works thanks to the [HTTPRPC](https://github.com/Novik/ruTorrent/wiki/PluginHTTPRPC) plugin.
 
 ## Installation
 
