@@ -25,8 +25,8 @@ if (process.env.HOST) {
 if (process.env.PORT) {
   options.port = process.env.PORT;
 }
-if (process.env.PATH) {
-  options.path = process.env.PATH;
+if (process.env.PREFIX_PATH) {
+  options.path = process.env.PREFIX_PATH;
 }
 if (process.env.SSL) {
   options.ssl = process.env.SSL;
