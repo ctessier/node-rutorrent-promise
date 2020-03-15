@@ -9,7 +9,7 @@
     "api"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/mocha --ui bdd --reporter spec --colors"
+    "test": "./node_modules/.bin/mocha --ui bdd --reporter spec --colors --timeout 10000"
   },
   "author": "Clément Tessier <https://github.com/ctessier>",
   "repository": "github:ctessier/node-rutorrent-promise",
