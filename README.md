@@ -16,16 +16,16 @@ npm i rutorrent-promise --save
 ```
 
 ```javascript
-  const RuTorrent = require('rutorrent-promise');
+const RuTorrent = require('rutorrent-promise');
 
-  const rutorrent = new RuTorrent({
-    host: 'localhost', // default: localhost
-    port: 80, // default: 80
-    path: '', // default: /rutorrent
-    ssl: true, // default: false
-    username: '', // default: none
-    password: '', // default: none
-  });
+const rutorrent = new RuTorrent({
+  host: 'localhost', // default: localhost
+  port: 80,          // default: 80
+  path: '',          // default: /rutorrent
+  ssl: true,         // default: false
+  username: '',      // default: none
+  password: '',      // default: none
+});
 ```
 
 ## Available fields
@@ -132,7 +132,7 @@ Feel free to contribute and help me add more methods to interact with ruTorrent.
 
 To run the unit tests, create an `.env` file in the `test` directory and fill it in with your client host and credentials:
 
-```sh
+```bash
 $ cp test/.env.sample test/.env
 $ cat test/.env
 HOST=YOUR_CLIENT_HOST
