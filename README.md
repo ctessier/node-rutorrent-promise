@@ -132,7 +132,7 @@ Feel free to contribute and help me add more methods to interact with ruTorrent.
 
 To run the unit tests, create an `.env` file in the `test` directory and fill it in with your client host and credentials:
 
-```bash
+```shell
 $ cp test/.env.sample test/.env
 $ cat test/.env
 HOST=YOUR_CLIENT_HOST
