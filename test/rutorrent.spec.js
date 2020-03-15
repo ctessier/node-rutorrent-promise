@@ -15,6 +15,7 @@ const RuTorrent = require('../');
 const options = {};
 
 const sampleUrl = 'http://downloads.raspberrypi.org/raspbian/images/raspbian-2019-09-30/2019-09-26-raspbian-buster.zip.torrent';
+const sampleHash = '75146D87ADF9AF7D17F1803FCAEA9C715C73947F';
 
 path.resolve('tmp', path.basename(sampleUrl));
 
@@ -24,8 +25,8 @@ if (process.env.HOST) {
 if (process.env.PORT) {
   options.port = process.env.PORT;
 }
-if (process.env.PATH) {
-  options.path = process.env.PATH;
+if (process.env.PREFIX_PATH) {
+  options.path = process.env.PREFIX_PATH;
 }
 if (process.env.SSL) {
   options.ssl = process.env.SSL;
@@ -79,7 +80,7 @@ describe('rutorrent', () => {
             label: 'node-rutorrent-promise'
           }, ['d.get_name', 'd.get_custom1'])
             .then((response) => {
-              expect(response).to.have.property('hashString');
+              expect(response).to.have.property('hashString', sampleHash);
               expect(response).to.have.property('d.get_name', '2019-09-26-raspbian-buster.zip');
               expect(response).to.have.property('d.get_custom1', 'node-rutorrent-promise');
               done();
@@ -87,6 +88,18 @@ describe('rutorrent', () => {
             .catch(done);
         });
       });
+    });
+
+    it('should delete torrent from hash', (done) => {
+      rutorrent.delete(sampleHash, true)
+        .then(({ hashString }) => {
+          return rutorrent.get()
+            .then((results) => {
+              expect(results.every(r => r.hashString !== hashString)).to.be.true;
+            });
+        })
+        .then(done)
+        .catch(done);
     });
   });
 
