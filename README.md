@@ -1,6 +1,7 @@
 # ⬇️ node-rutorrent-promise
 
 [![version](https://badgen.net/npm/v/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
+[![dependencies](https://badgen.net/david/dep/ctessier/node-rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
 [![size](https://badgen.net/bundlephobia/min/rutorrent-promise)](https://bundlephobia.com/result?p=rutorrent-promise)
 [![downloads](https://badgen.net/npm/dt/rutorrent-promise)](https://www.npmjs.com/package/rutorrent-promise)
 ![license](https://badgen.net/npm/license/rutorrent-promise)
@@ -109,6 +110,25 @@ rutorrent
   });
 ```
 
+### `addUrl(url, options = {}, fields = [])`
+
+Add a new torrent from an url.
+
+```javascript
+rutorrent
+  .addFile('<magnet|url>', {
+    label: <string>,
+    destination: <string>,
+  }, ['d.get_name'])
+  .then((data) => {
+    // Response example:
+    // {
+    //   hashString: <string>,
+    //   'd.get_name': <string>,
+    // }
+  });
+```
+
 ### `delete(hash, deleteTiedFile = true)`
 
 Delete a torrent.
@@ -139,7 +159,7 @@ HOST=YOUR_CLIENT_HOST
 PORT=YOUR_CLIENT_PORT
 PREFIX_PATH=YOUR_CLIENT_PREFIX_PATH # (default is /rutorrent)
 SSL=true                            # (https or http)
-USERNAME=YOUR_CLIENT_USERNAME
+LOGIN=YOUR_CLIENT_LOGIN
 PASSWORD=YOUR_CLIENT_PASSWORD
 
 $ npm i && npm t

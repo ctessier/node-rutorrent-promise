@@ -31,8 +31,8 @@ if (process.env.PREFIX_PATH) {
 if (process.env.SSL) {
   options.ssl = process.env.SSL;
 }
-if (process.env.USERNAME) {
-  options.username = process.env.USERNAME;
+if (process.env.LOGIN) {
+  options.username = process.env.LOGIN;
 }
 if (process.env.PASSWORD) {
   options.password = process.env.PASSWORD;
@@ -88,6 +88,19 @@ describe('rutorrent', () => {
             .catch(done);
         });
       });
+    });
+
+    it('should add torrent from url', (done) => {
+      rutorrent.addUrl(sampleUrl, {
+        label: 'node-rutorrent-promise',
+      }, ['d.get_name', 'd.get_custom1'])
+        .then((response) => {
+          expect(response).to.have.property('hashString', sampleHash);
+          expect(response).to.have.property('d.get_name', '2019-09-26-raspbian-buster.zip');
+          expect(response).to.have.property('d.get_custom1', 'node-rutorrent-promise');
+          done();
+        })
+        .catch(done);
     });
 
     it('should delete torrent from hash', (done) => {
