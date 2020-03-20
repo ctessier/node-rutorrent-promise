@@ -31,8 +31,8 @@ if (process.env.PREFIX_PATH) {
 if (process.env.SSL) {
   options.ssl = process.env.SSL;
 }
-if (process.env.USERNAME) {
-  options.username = process.env.USERNAME;
+if (process.env.LOGIN) {
+  options.username = process.env.LOGIN;
 }
 if (process.env.PASSWORD) {
   options.password = process.env.PASSWORD;
