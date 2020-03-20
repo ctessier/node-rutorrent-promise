@@ -109,6 +109,25 @@ rutorrent
   });
 ```
 
+### `addUrl(url, options = {}, fields = [])`
+
+Add a new torrent from an url.
+
+```javascript
+rutorrent
+  .addFile('<magnet|url>', {
+    label: <string>,
+    destination: <string>,
+  }, ['d.get_name'])
+  .then((data) => {
+    // Response example:
+    // {
+    //   hashString: <string>,
+    //   'd.get_name': <string>,
+    // }
+  });
+```
+
 ### `delete(hash, deleteTiedFile = true)`
 
 Delete a torrent.

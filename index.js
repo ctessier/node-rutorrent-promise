@@ -114,6 +114,45 @@ class RuTorrent {
   }
 
   /**
+   * Adds a new torrent from a given url.
+   *
+   * Available options:
+   *   - label
+   *   - destination
+   *
+   * @param  {string}          url
+   * @param  {object}          options
+   * @param  {array}           fields
+   * @return {Promise<object>}
+   */
+  addUrl(url, options = {}, fields = []) {
+    const formData = new FormData();
+    formData.append('url', url);
+
+    if (options.label) {
+      formData.append('label', options.label);
+    }
+    if (options.destination) {
+      formData.append('dir_edit', options.destination);
+    }
+
+    return new Promise((resolve, reject) => {
+      this.callServer({
+        type: 'multipart/form-data',
+        path: '/php/addtorrent.php',
+        data: formData,
+        headers: formData.getHeaders(),
+      }).then(() => {
+        return this.get(fields);
+      }).then((data) => {
+        resolve(data.pop());
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
+  /**
    * Get the list of torrents.
    *
    * @param  {array}          fields
