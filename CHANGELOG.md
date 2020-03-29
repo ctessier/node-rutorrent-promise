@@ -40,7 +40,7 @@ If you still wish to get details on a torrent file or magnet, have a look at the
 
 ### Fixed
 
-- Conflict with PATH environment variable [#9](https://github.com/ctessier/node-rutorrent-promise/pull/9)
+- Conflict with PATH environment variable ([#9](https://github.com/ctessier/node-rutorrent-promise/pull/9))
 
 ## [v1.1.1](https://github.com/ctessier/node-rutorrent-promise/compare/v1.1.0...v1.1.1)
 
@@ -48,7 +48,7 @@ If you still wish to get details on a torrent file or magnet, have a look at the
 
 ### Fixed
 
-- fix option property for providing a custom path (Thanks @ShaunLWM [#5](https://github.com/ctessier/node-rutorrent-promise/pull/5))
+- fix option property for providing a custom path (Thanks [@ShaunLWM](https://github.com/ShaunLWM) [#5](https://github.com/ctessier/node-rutorrent-promise/pull/5))
 
 
 ## [v1.1.0](https://github.com/ctessier/node-rutorrent-promise/compare/v1.0.0...v1.1.0)
