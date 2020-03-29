@@ -105,7 +105,7 @@ Add a new torrent from a file.
 
 ```javascript
 rutorrent
-  .addFile(fs.readFileSync('foo/bar.torrent'), {
+  .addFile(fs.readFileSync('/path/to/ubuntu-18.04.4-desktop-amd64.iso.torrent'), {
     label: 'linux-distro',
     destination: '/downloads',
   })
