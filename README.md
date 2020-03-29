@@ -77,71 +77,77 @@ List all the torrents.
 ```javascript
 rutorrent
   .get(['d.get_name', 'd.get_custom1', 'd.get_size_bytes'])
-  .then((data) => {
-    // Response example:
-    // [
-    //   {
-    //     hashString: <string>,
-    //     'd.get_name': <string>,
-    //     'd.get_custom1': <string>,
-    //     'd.get_size_bytes': <number>,
-    //   },
-    //   ...
-    // ]
-  });
+    .then((data) => {
+      console.log(data);
+      // [
+      //   {
+      //     hashString: '286D2E5B4F8369855328336AC1263AE02A7A60D5',
+      //     'd.get_name': 'ubuntu-18.04.4-desktop-amd64.iso',
+      //     'd.get_custom1': 'linux-distro',
+      //     'd.get_size_bytes': '2126544896'
+      //   },
+      //   {
+      //     hashString: 'EE55335F2ACDE309FA645FAB11C04750D7E45FA1',
+      //     'd.get_name': 'ubuntu-16.04.6-desktop-amd64.iso',
+      //     'd.get_custom1': 'linux-distro',
+      //     'd.get_size_bytes': '1664614400'
+      //   }
+      // ]
+    })
+    .catch((err) => {
+      // something happened...
+    });
 ```
 
-### `addFile(file, options = {}, fields = [])`
+### `addFile(file, options = {})`
 
 Add a new torrent from a file.
 
 ```javascript
 rutorrent
-  .addFile(fs.readFileSync('foo/bar.torrent'), {
-    label: <string>,
-    destination: <string>,
-  }, ['d.get_name'])
-  .then((data) => {
-    // Response example:
-    // {
-    //   hashString: <string>,
-    //   'd.get_name': <string>,
-    // }
-  });
+  .addFile(fs.readFileSync('/path/to/ubuntu-18.04.4-desktop-amd64.iso.torrent'), {
+    label: 'linux-distro',
+    destination: '/downloads',
+  })
+    .then(() => {
+      // torrent was added!
+    })
+    .catch((err) => {
+      // something happenned...
+    });
 ```
 
-### `addUrl(url, options = {}, fields = [])`
+### `addUrl(url, options = {})`
 
 Add a new torrent from an url.
 
 ```javascript
 rutorrent
-  .addFile('<magnet|url>', {
-    label: <string>,
-    destination: <string>,
-  }, ['d.get_name'])
-  .then((data) => {
-    // Response example:
-    // {
-    //   hashString: <string>,
-    //   'd.get_name': <string>,
-    // }
-  });
+  .addUrl('http://releases.ubuntu.com/18.04/ubuntu-18.04.4-desktop-amd64.iso.torrent', {
+    label: 'linux-distro',
+    destination: '/downloads',
+  })
+    .then(() => {
+      // torrent was added!
+    })
+    .catch((err) => {
+      // something happenned...
+    });
 ```
 
-### `delete(hash, deleteTiedFile = true)`
+### `delete(hash, deleteTiedFiles = true)`
 
 Delete a torrent.
 
 ```javascript
 rutorrent
-  .delete('hash_string')
-  .then((data) => {
-    // Response example:
-    // {
-    //   hashString: 'hash_string',
-    // }
-  });
+  .delete('286D2E5B4F8369855328336AC1263AE02A7A60D5')
+    .then(() => {
+      // torent has been deleted!
+    })
+    .catch((err) => {
+      // something happened...
+    });
 ```
 
 ## Contributing

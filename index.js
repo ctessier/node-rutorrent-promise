@@ -1,7 +1,7 @@
 'use strict';
 
-const axios = require('axios');
 const qs = require('querystring');
+const fetch = require('node-fetch');
 const FormData = require('form-data');
 
 const utils = require('./utils');
@@ -27,12 +27,10 @@ class RuTorrent {
     const port = options.port || 80;
     const path = options.path || '/rutorrent';
 
-    this.axios = axios.create({
-      baseURL: `${protocol}://${host}:${port}${path}`,
-    });
+    this.baseUrl = `${protocol}://${host}:${port}${path}`;
 
     if (options.username) {
-      this.axios.defaults.headers.common['Authorization'] = `Basic ${Buffer.from(`${options.username}:${options.password || ''}`).toString('base64')}`;
+      this.authorizationHeader = `Basic ${Buffer.from(`${options.username}:${options.password || ''}`).toString('base64')}`;
     }
   }
 
@@ -42,74 +40,69 @@ class RuTorrent {
    * @return {Promise}
    */
   callServer(options) {
-    if (!options.type) {
-      options.type = 'application/x-www-form-urlencoded';
-    }
-    if (!options.headers) {
-      options.headers = {};
+    let headers = {
+      authorization: this.authorizationHeader,
+    };
+
+    if (options.data instanceof FormData) {
+      headers = {
+        ...options.data.getHeaders(),
+        ...headers,
+      };
     }
 
-    return new Promise(async (resolve, reject) => {
+    return fetch(`${this.baseUrl}${options.path}`, {
+      method: 'POST',
+      redirect: 'manual',
+      headers,
+      body: options.data,
+    }).then((res) => {
+      if (res.ok) {
+        return res.text();
+      }
+      else if (res.status === 302) {
+        if (res.headers.get('location').indexOf('Success') > 0) {
+          return res.text();
+        }
+        throw new Error('Error received from RuTorrent');
+      }
+      else {
+        throw new Error(res.statusText);
+      }
+    }).then((data) => {
       try {
-        const response = await this.axios.post(options.path, options.data, {
-          responseType: 'json',
-          maxRedirects: 0,
-          headers: {
-            'Content-Type': options.type,
-            ...options.headers,
-          },
-        });
-
-        if (response.headers['content-type'].indexOf('text/xml') !== -1 && response.data.indexOf('faultCode') > 0) {
-          throw new Error(response.data);
-        }
-
-        resolve(response.data);
-      } catch (err) {
-        if (err.response && err.response.status === 302 && err.response.headers.location.indexOf('Success') !== -1) {
-          resolve(true);
-        }
-        reject(err);
+        return JSON.parse(data);
+      } catch (e) {
+        return data;
       }
     });
   }
 
   /**
-   * Adds a new torrent from a given file.
+   * Adds a new torrent from a given file or buffer.
    *
    * Available options:
    *   - label
    *   - destination
    *
-   * @param  {string|Buffer}   file
-   * @param  {object}          options
-   * @param  {array}           fields
-   * @return {Promise<object>}
+   * @param  {string|Buffer} file
+   * @param  {object}        options
+   * @return {Promise}
    */
-  addFile(file, options = {}, fields = []) {
-    const formData = new FormData();
-    formData.append('torrent_file', file, 'torrent');
+  addFile(file, options = {}) {
+    const params = new FormData();
+    params.append('torrent_file', file, 'torrent');
 
     if (options.label) {
-      formData.append('label', options.label);
+      params.append('label', options.label);
     }
     if (options.destination) {
-      formData.append('dir_edit', options.destination);
+      params.append('dir_edit', options.destination);
     }
 
-    return new Promise((resolve, reject) => {
-      this.callServer({
-        type: 'multipart/form-data',
-        path: '/php/addtorrent.php',
-        data: formData,
-        headers: formData.getHeaders(),
-      }).then(() => {
-        return this.get(fields);
-      }).then((data) => {
-        resolve(data.pop());
-      }).catch(err => {
-        reject(err);
-      });
+    return this.callServer({
+      path: '/php/addtorrent.php',
+      data: params,
     });
   }
 
@@ -120,35 +113,24 @@ class RuTorrent {
    *   - label
    *   - destination
    *
-   * @param  {string}          url
-   * @param  {object}          options
-   * @param  {array}           fields
-   * @return {Promise<object>}
+   * @param  {string}  url
+   * @param  {object}  options
+   * @return {Promise}
    */
-  addUrl(url, options = {}, fields = []) {
-    const formData = new FormData();
-    formData.append('url', url);
+  addUrl(url, options = {}) {
+    const params = new FormData();
+    params.append('url', url);
 
     if (options.label) {
-      formData.append('label', options.label);
+      params.append('label', options.label);
     }
     if (options.destination) {
-      formData.append('dir_edit', options.destination);
+      params.append('dir_edit', options.destination);
     }
 
-    return new Promise((resolve, reject) => {
-      this.callServer({
-        type: 'multipart/form-data',
-        path: '/php/addtorrent.php',
-        data: formData,
-        headers: formData.getHeaders(),
-      }).then(() => {
-        return this.get(fields);
-      }).then((data) => {
-        resolve(data.pop());
-      }).catch(err => {
-        reject(err);
-      });
+    return this.callServer({
+      path: '/php/addtorrent.php',
+      data: params,
     });
   }
 
@@ -159,9 +141,11 @@ class RuTorrent {
    * @return {Promise<array>}
    */
   get(fields = []) {
+    const data = qs.stringify({ mode: 'list' });
+
     return this.callServer({
       path: '/plugins/httprpc/action.php',
-      data: qs.stringify({ mode: 'list' }),
+      data,
     }).then((data) => Object.keys(data.t).map((hashString) => {
       const torrent = utils.getTorrentInfo(data.t[hashString]);
       const res = { hashString };
@@ -173,13 +157,13 @@ class RuTorrent {
   }
 
   /**
-   * Delete a torrent.
+   * Delete a torrent from its hash.
    *
    * @param  {string}          hash
-   * @param  {boolean}         deleteTiedFile
+   * @param  {boolean}         deleteTiedFiles
    * @return {Promise<object>}
    */
-  delete(hash, deleteTiedFile = true) {
+  delete(hash, deleteTiedFiles = true) {
     let data = `<?xml version="1.0" encoding="UTF-8"?>
       <methodCall>
         <methodName>system.multicall</methodName>
@@ -213,7 +197,7 @@ class RuTorrent {
                       </member>
                     </struct>
                   </value>`;
-    if (deleteTiedFile) {
+    if (deleteTiedFiles) {
       data += `<value>
         <struct>
           <member>
@@ -270,9 +254,7 @@ class RuTorrent {
       type: 'text/xml; charset=UTF-8',
       path: '/plugins/httprpc/action.php',
       data,
-    }).then(() => ({
-      hashString: hash,
-    }));
+    });
   }
 }
 
