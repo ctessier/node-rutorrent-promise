@@ -23,11 +23,11 @@ If you still wish to get details on a torrent file or magnet, have a look at the
 
 ### Added
 
-- Possibility to add a torrent via an URL (#13)
+- Possibility to add a torrent via an URL ([#13](https://github.com/ctessier/node-rutorrent-promise/pull/13))
 
 ### Fixed
 
-- Conflict with `USERNAME` environment variable on Linux (#14)
+- Conflict with `USERNAME` environment variable on Linux ([#14](https://github.com/ctessier/node-rutorrent-promise/pull/14))
 
 ## [v1.2.0](https://github.com/ctessier/node-rutorrent-promise/compare/v1.1.1...v1.2.0)
 
@@ -35,12 +35,12 @@ If you still wish to get details on a torrent file or magnet, have a look at the
 
 ### Added
 
-- Possibility to delete a torrent (#8)
-- Upgrade Axios version to 0.19.2 (#10)
+- Possibility to delete a torrent ([#8](https://github.com/ctessier/node-rutorrent-promise/pull/8))
+- Upgrade Axios version to 0.19.2 ([#10](https://github.com/ctessier/node-rutorrent-promise/pull/10))
 
 ### Fixed
 
-- Conflict with PATH environment variable (#9)
+- Conflict with PATH environment variable [#9](https://github.com/ctessier/node-rutorrent-promise/pull/9)
 
 ## [v1.1.1](https://github.com/ctessier/node-rutorrent-promise/compare/v1.1.0...v1.1.1)
 
@@ -48,7 +48,7 @@ If you still wish to get details on a torrent file or magnet, have a look at the
 
 ### Fixed
 
-- fix option property for providing a custom path (Thanks @ShaunLWM #5)
+- fix option property for providing a custom path (Thanks @ShaunLWM [#5](https://github.com/ctessier/node-rutorrent-promise/pull/5))
 
 
 ## [v1.1.0](https://github.com/ctessier/node-rutorrent-promise/compare/v1.0.0...v1.1.0)
@@ -61,7 +61,7 @@ If you still wish to get details on a torrent file or magnet, have a look at the
 
 ### Added
 
-- possibility to specify wanted fields when retrieving torrents (#1)
+- possibility to specify wanted fields when retrieving torrents ([#1](https://github.com/ctessier/node-rutorrent-promise/pull/1))
 
 ## v1.0.0
 
