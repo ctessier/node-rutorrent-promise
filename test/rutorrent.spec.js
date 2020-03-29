@@ -14,10 +14,17 @@ if (!fs.existsSync(path.resolve('tmp'))) {
 const RuTorrent = require('../');
 const options = {};
 
-const sampleUrl = 'http://downloads.raspberrypi.org/raspbian/images/raspbian-2019-09-30/2019-09-26-raspbian-buster.zip.torrent';
-const sampleHash = '75146D87ADF9AF7D17F1803FCAEA9C715C73947F';
-
-path.resolve('tmp', path.basename(sampleUrl));
+const dataSet = [{
+  name: 'ubuntu-18.04.4-desktop-amd64.iso',
+  hash: '286D2E5B4F8369855328336AC1263AE02A7A60D5',
+  url: 'http://releases.ubuntu.com/18.04/ubuntu-18.04.4-desktop-amd64.iso.torrent',
+  label: 'linux-distro',
+}, {
+  name: 'ubuntu-16.04.6-desktop-amd64.iso',
+  hash: 'EE55335F2ACDE309FA645FAB11C04750D7E45FA1',
+  url: 'http://releases.ubuntu.com/16.04/ubuntu-16.04.6-desktop-amd64.iso.torrent',
+  label: 'linux-distro',
+}];
 
 if (process.env.HOST) {
   options.host = process.env.HOST;
@@ -51,7 +58,7 @@ describe('rutorrent', () => {
   });
 
   describe('methods', () => {
-    it('returns the list of torrents', (done) => {
+    it('get - returns the list of torrents', (done) => {
       rutorrent.get(['d.get_name', 'd.get_size_bytes', 'd.get_bytes_done', 'd.get_custom1'])
         .then((result) => {
           expect(result).to.be.an('array');
@@ -69,49 +76,57 @@ describe('rutorrent', () => {
         .catch(done);
     });
 
-    it('should add torrent from file', (done) => {
-      const destination = path.resolve('tmp', path.basename(sampleUrl));
+    it('addFile - should add torrent from file', (done) => {
+      const destination = path.resolve('tmp', path.basename(dataSet[0].url));
       const writeStream = fs.createWriteStream(destination);
-      http.get(sampleUrl, (response) => {
+      http.get(dataSet[0].url, (response) => {
         response.pipe(writeStream);
         response.on('error', done);
         response.on('end', () => {
-          rutorrent.addFile(fs.readFileSync(destination), {
-            label: 'node-rutorrent-promise'
-          }, ['d.get_name', 'd.get_custom1'])
-            .then((response) => {
-              expect(response).to.have.property('hashString', sampleHash);
-              expect(response).to.have.property('d.get_name', '2019-09-26-raspbian-buster.zip');
-              expect(response).to.have.property('d.get_custom1', 'node-rutorrent-promise');
-              done();
-            })
+          rutorrent.addFile(fs.readFileSync(destination), { label: dataSet[0].label })
+            .then(() => rutorrent.get(['d.get_name', 'd.get_custom1'])
+              .then((results) => {
+                const torrent = results.find(r => r.hashString === dataSet[0].hash);
+                expect(torrent).to.eql({
+                  hashString: dataSet[0].hash,
+                  'd.get_name': dataSet[0].name,
+                  'd.get_custom1': dataSet[0].label,
+                });
+                done();
+              }))
             .catch(done);
         });
       });
     });
 
-    it('should add torrent from url', (done) => {
-      rutorrent.addUrl(sampleUrl, {
-        label: 'node-rutorrent-promise',
-      }, ['d.get_name', 'd.get_custom1'])
-        .then((response) => {
-          expect(response).to.have.property('hashString', sampleHash);
-          expect(response).to.have.property('d.get_name', '2019-09-26-raspbian-buster.zip');
-          expect(response).to.have.property('d.get_custom1', 'node-rutorrent-promise');
-          done();
-        })
+    it('addUrl - should add torrent from url', (done) => {
+      rutorrent.addUrl(dataSet[1].url, { label: dataSet[1].label })
+        .then(() => rutorrent.get(['d.get_name', 'd.get_custom1'])
+          .then((results) => {
+            const torrent = results.find(r => r.hashString === dataSet[0].hash);
+            expect(torrent).to.eql({
+              hashString: dataSet[0].hash,
+              'd.get_name': dataSet[0].name,
+              'd.get_custom1': dataSet[0].label,
+            });
+            done();
+          }))
         .catch(done);
     });
 
-    it('should delete torrent from hash', (done) => {
-      rutorrent.delete(sampleHash, true)
-        .then(({ hashString }) => {
-          return rutorrent.get()
-            .then((results) => {
-              expect(results.every(r => r.hashString !== hashString)).to.be.true;
-            });
-        })
-        .then(done)
+    it('delete - should delete torrent from hash', (done) => {
+      rutorrent.delete(dataSet[0].hash, true)
+        .then(() => rutorrent.get()
+          .then((results) => {
+            expect(results.every(r => r.hashString !== dataSet[0].hash)).to.be.true;
+
+            return rutorrent.delete(dataSet[1].hash, true)
+              .then(() => rutorrent.get()
+                .then((results) => {
+                  expect(results.every(r => r.hashString !== dataSet[1].hash)).to.be.true;
+                  done();
+                }))
+          }))
         .catch(done);
     });
   });
