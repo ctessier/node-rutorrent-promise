@@ -149,7 +149,7 @@ class RuTorrent {
       const res = [];
       data.forEach( file => {
         res.push({name: file[0], size: file[3]});
-      }
+      });
       return res;
                    });
   }
