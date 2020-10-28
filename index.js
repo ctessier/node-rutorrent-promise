@@ -135,6 +135,42 @@ class RuTorrent {
   }
 
   /**
+   * Get the list of files for torrent by hash.
+   *
+   * @param  {string}          h
+   * @return {Promise<array>}
+   */
+  getFiles(h) {
+    const data=qs.stringify({ mode: 'fls', hash: h});
+    return this.callServer({
+      path: '/plugins/httprpc/action.php',
+      data,
+    }).then((data) => {
+      const res = [];
+      data.forEach( file => {
+        res.push({name: file[0], size: file[3]});
+      }
+      return res;
+                   });
+  }
+  
+  /**
+   * Get the list of files for torrent by hash.
+   *
+   * @param  {string}          h
+   * @param  {string}          cmd
+   * @param  {string}          arg (default empty)
+   * @return {Promise<array>}
+   */
+  exec(h,cmd,arg=""){
+    const data = qs.stringify({ mode: cmd, hash: h, v: arg });
+    
+    return this.callServer({
+      path: '/plugins/httprpc/action.php',
+      data,
+    }).then((data) => {return data});
+  }
+  /**
    * Get the list of torrents.
    *
    * @param  {array}          fields
